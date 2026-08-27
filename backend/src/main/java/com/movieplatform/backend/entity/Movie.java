@@ -19,6 +19,9 @@ public class Movie {
     @Column(name = "movie_id")
     private Long movieId;
 
+    @Column(name = "tmdb_movie_id", nullable = false, unique = true)
+    private Long tmdbMovieId;
+
     @Column(nullable = false, length = 200)
     private String title;
 
@@ -49,6 +52,28 @@ public class Movie {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    public Movie(
+        Long tmdbMovieId,
+        String title,
+        String description,
+        String director,
+        String genre,
+        Integer runningTime,
+        LocalDate releaseDate,
+        String posterUrl,
+        String ageRating
+    ) {
+        this.tmdbMovieId = tmdbMovieId;
+        this.title = title;
+        this.description = description;
+        this.director = director;
+        this.genre = genre;
+        this.runningTime = runningTime;
+        this.releaseDate = releaseDate;
+        this.posterUrl = posterUrl;
+        this.ageRating = ageRating;
+    }
+    
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
