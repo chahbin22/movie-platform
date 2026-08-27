@@ -7,7 +7,7 @@ import com.movieplatform.backend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.movieplatform.backend.dto.auth.LoginRequest;
 @Service
 public class AuthService {
 
@@ -45,5 +45,25 @@ public class AuthService {
         User savedUser = userRepository.save(user);
 
         return UserResponseDto.from(savedUser);
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponseDto login(LoginRequest request) {
+
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(() ->
+                        new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.")
+                );
+
+        if (!passwordEncoder.matches(
+                request.password(),
+                user.getPassword()
+        )) {
+            throw new IllegalArgumentException(
+                    "이메일 또는 비밀번호가 올바르지 않습니다."
+            );
+        }
+
+        return UserResponseDto.from(user);
     }
 }

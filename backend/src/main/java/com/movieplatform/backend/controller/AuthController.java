@@ -5,6 +5,7 @@ import com.movieplatform.backend.dto.user.UserResponseDto;
 import com.movieplatform.backend.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import com.movieplatform.backend.dto.auth.LoginRequest;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -21,5 +22,12 @@ public class AuthController {
             @Valid @RequestBody SignupRequest request
     ) {
         return authService.signup(request);
+    }
+
+    @PostMapping("/login")
+    public UserResponseDto login(
+            @Valid @RequestBody LoginRequest request
+    ) {
+        return authService.login(request);
     }
 }
