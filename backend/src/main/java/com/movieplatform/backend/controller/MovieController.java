@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.RequestParam;
+
 @RestController
 @RequestMapping("/api/movies")
 public class MovieController {
@@ -20,8 +22,14 @@ public class MovieController {
     }
 
     @GetMapping
-    public List<MovieResponseDto> getMovies() {
-        return movieService.getMovies();
+    public List<MovieResponseDto> getMovies(
+            @RequestParam(required = false) String keyword
+    ) {
+        if (keyword == null || keyword.isBlank()) {
+            return movieService.getMovies();
+        }
+
+        return movieService.searchMovies(keyword);
     }
 
     @GetMapping("/{movieId}")

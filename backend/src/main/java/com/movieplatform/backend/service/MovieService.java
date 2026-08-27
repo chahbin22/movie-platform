@@ -27,10 +27,18 @@ public class MovieService {
 
     @Transactional(readOnly = true)
     public List<MovieResponseDto> getMovies() {
-    return movieRepository.findAll()
-            .stream()
-            .map(MovieResponseDto::from)
-            .toList();
+        return movieRepository.findAll()
+                .stream()
+                .map(MovieResponseDto::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<MovieResponseDto> searchMovies(String keyword) {
+        return movieRepository.findByTitleContainingIgnoreCase(keyword)
+                .stream()
+                .map(MovieResponseDto::from)
+                .toList();
     }
 
     @Transactional(readOnly = true)
