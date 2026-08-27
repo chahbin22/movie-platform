@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import com.movieplatform.backend.dto.tmdb.TmdbMovieDetailDto;
 
 @Component
 public class TmdbClient {
@@ -38,4 +39,14 @@ public class TmdbClient {
                 .retrieve()
                 .body(TmdbMovieResponse.class);
     }
+
+    public TmdbMovieDetailDto getMovieDetail(Long movieId) {
+    return restClient.get()
+            .uri(uriBuilder -> uriBuilder
+                    .path("/movie/{movieId}")
+                    .queryParam("language", "ko-KR")
+                    .build(movieId))
+            .retrieve()
+            .body(TmdbMovieDetailDto.class);
+}
 }
