@@ -6,7 +6,7 @@ import com.movieplatform.backend.entity.Movie;
 import com.movieplatform.backend.repository.MovieRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.movieplatform.backend.dto.movie.MovieResponseDto;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,8 +26,22 @@ public class MovieService {
     }
 
     @Transactional(readOnly = true)
-    public List<Movie> getMovies() {
-        return movieRepository.findAll();
+    public List<MovieResponseDto> getMovies() {
+    return movieRepository.findAll()
+            .stream()
+            .map(MovieResponseDto::from)
+            .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public MovieResponseDto getMovie(Long movieId) {
+
+    Movie movie = movieRepository.findById(movieId)
+            .orElseThrow(() ->
+                    new IllegalArgumentException("영화를 찾을 수 없습니다.")
+            );
+
+    return MovieResponseDto.from(movie);
     }
 
     @Transactional
