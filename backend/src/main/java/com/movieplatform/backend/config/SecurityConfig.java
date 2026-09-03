@@ -4,12 +4,11 @@ import com.movieplatform.backend.security.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.http.HttpMethod;
-
 
 @Configuration
 public class SecurityConfig {
@@ -29,29 +28,15 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
+
                 .formLogin(form -> form.disable())
+
                 .httpBasic(basic -> basic.disable())
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
                         )
-                )
-                
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/movies/*/reviews"
-                        )
-                        .authenticated()
-                        
-                        .requestMatchers(
-                                "/api/users/me",
-                                "/api/reservations/**"
-                        )
-                        .authenticated()
-                        .anyRequest()
-                        .permitAll()
                 )
 
                 .exceptionHandling(exception ->
@@ -61,6 +46,41 @@ public class SecurityConfig {
                                                 HttpServletResponse.SC_UNAUTHORIZED
                                         )
                         )
+                )
+
+                .authorizeHttpRequests(auth -> auth
+
+                        // 리뷰 작성 - 로그인 필요
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/movies/*/reviews"
+                        )
+                        .authenticated()
+
+                        // 리뷰 수정 - 로그인 필요
+                        .requestMatchers(
+                                HttpMethod.PATCH,
+                                "/api/movies/*/reviews/*"
+                        )
+                        .authenticated()
+
+                        // 리뷰 삭제 - 로그인 필요
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/movies/*/reviews/*"
+                        )
+                        .authenticated()
+
+                        // 마이페이지 / 예매 관련 - 로그인 필요
+                        .requestMatchers(
+                                "/api/users/me",
+                                "/api/reservations/**"
+                        )
+                        .authenticated()
+
+                        // 나머지는 로그인 없이 접근 가능
+                        .anyRequest()
+                        .permitAll()
                 )
 
                 .addFilterBefore(

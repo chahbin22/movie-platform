@@ -92,4 +92,78 @@ public class ReviewService {
                 .map(ReviewResponseDto::from)
                 .toList();
     }
+    @Transactional
+    public ReviewResponseDto updateReview(
+            Long userId,
+            Long movieId,
+            Long reviewId,
+            ReviewRequest request
+    ) {
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "리뷰를 찾을 수 없습니다."
+                        )
+                );
+
+        if (!review.getMovie()
+                .getMovieId()
+                .equals(movieId)) {
+
+            throw new IllegalArgumentException(
+                    "해당 영화의 리뷰가 아닙니다."
+            );
+        }
+
+        if (!review.getUser()
+                .getUserId()
+                .equals(userId)) {
+
+            throw new IllegalArgumentException(
+                    "본인의 리뷰만 수정할 수 있습니다."
+            );
+        }
+
+        review.update(
+                request.rating(),
+                request.content()
+        );
+
+        return ReviewResponseDto.from(review);
+    }
+    @Transactional
+    public void deleteReview(
+            Long userId,
+            Long movieId,
+            Long reviewId
+    ) {
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "리뷰를 찾을 수 없습니다."
+                        )
+                );
+
+        if (!review.getMovie()
+                .getMovieId()
+                .equals(movieId)) {
+
+            throw new IllegalArgumentException(
+                    "해당 영화의 리뷰가 아닙니다."
+            );
+        }
+
+        if (!review.getUser()
+                .getUserId()
+                .equals(userId)) {
+
+            throw new IllegalArgumentException(
+                    "본인의 리뷰만 삭제할 수 있습니다."
+            );
+        }
+
+        reviewRepository.delete(review);
+    }
 }

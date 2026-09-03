@@ -45,4 +45,38 @@ public class ReviewController {
 
         return reviewService.getMovieReviews(movieId);
     }
+        @PatchMapping("/{reviewId}")
+        public ReviewResponseDto updateReview(
+                Authentication authentication,
+                @PathVariable Long movieId,
+                @PathVariable Long reviewId,
+                @Valid @RequestBody ReviewRequest request
+        ) {
+
+        Long userId =
+                (Long) authentication.getPrincipal();
+
+        return reviewService.updateReview(
+                userId,
+                movieId,
+                reviewId,
+                request
+        );
+        } 
+        @DeleteMapping("/{reviewId}")
+        public void deleteReview(
+                Authentication authentication,
+                @PathVariable Long movieId,
+                @PathVariable Long reviewId
+        ) {
+
+        Long userId =
+                (Long) authentication.getPrincipal();
+
+        reviewService.deleteReview(
+                userId,
+                movieId,
+                reviewId
+        );
+        }
 }
