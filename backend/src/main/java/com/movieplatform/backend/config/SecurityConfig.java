@@ -27,18 +27,23 @@ public class SecurityConfig {
     ) throws Exception {
 
         http
+                // JWT 방식이므로 CSRF 비활성화
                 .csrf(csrf -> csrf.disable())
 
+                // 기본 로그인 화면 사용하지 않음
                 .formLogin(form -> form.disable())
 
+                // HTTP Basic 인증 사용하지 않음
                 .httpBasic(basic -> basic.disable())
 
+                // JWT를 사용하므로 세션을 생성하지 않음
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
                         )
                 )
 
+                // 인증 실패 시 401 반환
                 .exceptionHandling(exception ->
                         exception.authenticationEntryPoint(
                                 (request, response, authException) ->
@@ -49,6 +54,10 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+
+                        // =========================
+                        // Review
+                        // =========================
 
                         // 리뷰 작성
                         .requestMatchers(
@@ -71,6 +80,11 @@ public class SecurityConfig {
                         )
                         .authenticated()
 
+
+                        // =========================
+                        // Post
+                        // =========================
+
                         // 게시글 작성
                         .requestMatchers(
                                 HttpMethod.POST,
@@ -92,18 +106,55 @@ public class SecurityConfig {
                         )
                         .authenticated()
 
-                        // 내 정보 + 예매 관련
+
+                        // =========================
+                        // Comment
+                        // =========================
+
+                        // 댓글 작성
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/posts/*/comments"
+                        )
+                        .authenticated()
+
+                        // 댓글 수정
+                        .requestMatchers(
+                                HttpMethod.PATCH,
+                                "/api/posts/*/comments/*"
+                        )
+                        .authenticated()
+
+                        // 댓글 삭제
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/posts/*/comments/*"
+                        )
+                        .authenticated()
+
+
+                        // =========================
+                        // User / Reservation
+                        // =========================
+
+                        // 내 정보 조회 + 모든 예매 관련 API
                         .requestMatchers(
                                 "/api/users/me",
                                 "/api/reservations/**"
                         )
                         .authenticated()
 
-                        // 나머지 API 공개
+
+                        // =========================
+                        // Public API
+                        // =========================
+
+                        // 그 외 API는 로그인 없이 접근 가능
                         .anyRequest()
                         .permitAll()
                 )
 
+                // JWT 필터를 Spring Security 기본 인증 필터보다 먼저 실행
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
