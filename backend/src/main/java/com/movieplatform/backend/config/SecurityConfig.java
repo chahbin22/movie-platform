@@ -37,7 +37,10 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/me")
+                        .requestMatchers(
+                                "/api/users/me",
+                                "/api/reservations/**"
+                        )
                         .authenticated()
                         .anyRequest()
                         .permitAll()

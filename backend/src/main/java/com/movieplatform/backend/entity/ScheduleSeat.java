@@ -61,9 +61,33 @@ public class ScheduleSeat {
         this.status = ScheduleSeatStatus.AVAILABLE;
     }
 
+    public void reserve() {
+
+        if (this.status != ScheduleSeatStatus.AVAILABLE) {
+            throw new IllegalArgumentException(
+                    "이미 예약된 좌석입니다."
+            );
+        }
+
+        this.status = ScheduleSeatStatus.RESERVED;
+    }
+
+    public void release() {
+
+        if (this.status != ScheduleSeatStatus.RESERVED) {
+            throw new IllegalArgumentException(
+                    "예약된 좌석이 아닙니다."
+            );
+        }
+
+        this.status = ScheduleSeatStatus.AVAILABLE;
+    }
+
     @PrePersist
     protected void onCreate() {
+
         LocalDateTime now = LocalDateTime.now();
+
         this.createdAt = now;
         this.updatedAt = now;
     }

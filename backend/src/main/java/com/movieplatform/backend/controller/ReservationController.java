@@ -1,0 +1,36 @@
+package com.movieplatform.backend.controller;
+
+import com.movieplatform.backend.dto.reservation.ReservationRequest;
+import com.movieplatform.backend.dto.reservation.ReservationResponseDto;
+import com.movieplatform.backend.service.ReservationService;
+import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/reservations")
+public class ReservationController {
+
+    private final ReservationService reservationService;
+
+    public ReservationController(
+            ReservationService reservationService
+    ) {
+        this.reservationService = reservationService;
+    }
+
+    @PostMapping
+    public ReservationResponseDto createReservation(
+            Authentication authentication,
+            @Valid @RequestBody ReservationRequest request
+    ) {
+
+        Long userId =
+                (Long) authentication.getPrincipal();
+
+        return reservationService.createReservation(
+                userId,
+                request
+        );
+    }
+}
