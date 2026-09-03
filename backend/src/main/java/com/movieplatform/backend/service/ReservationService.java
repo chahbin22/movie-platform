@@ -132,4 +132,29 @@ public class ReservationService {
                 reservationSeats
         );
     }
+    @Transactional(readOnly = true)
+public List<ReservationResponseDto> getMyReservations(
+        Long userId
+) {
+
+    List<Reservation> reservations =
+            reservationRepository
+                    .findByUser_UserIdOrderByCreatedAtDesc(userId);
+
+    return reservations.stream()
+            .map(reservation -> {
+
+                List<ReservationSeat> reservationSeats =
+                        reservationSeatRepository
+                                .findByReservation_ReservationId(
+                                        reservation.getReservationId()
+                                );
+
+                return ReservationResponseDto.from(
+                        reservation,
+                        reservationSeats
+                );
+            })
+            .toList();
+}
 }

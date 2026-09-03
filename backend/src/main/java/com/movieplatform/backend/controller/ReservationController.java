@@ -6,6 +6,7 @@ import com.movieplatform.backend.service.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -33,4 +34,15 @@ public class ReservationController {
                 request
         );
     }
+    @GetMapping("/me")
+        public List<ReservationResponseDto> getMyReservations(
+                Authentication authentication
+        ) {
+
+        Long userId =
+                (Long) authentication.getPrincipal();
+
+        return reservationService
+                .getMyReservations(userId);
+        }
 }
