@@ -1,399 +1,420 @@
 # Movie Platform
 
-영화 검색, 상영 정보 조회, 좌석 예매, 리뷰 및 커뮤니티 기능을 제공하는 영화 플랫폼 프로젝트입니다.
+영화 정보 탐색, 상영 정보 확인, 좌석 조회 및 예매, 리뷰, 커뮤니티 기능을 하나의 서비스로 제공하는 영화 플랫폼 프로젝트입니다.
 
-여러 영화관의 상영 정보를 한눈에 비교하고, 영화 관람 이후에는 리뷰와 커뮤니티를 통해 다른 사용자들과 의견을 나눌 수 있는 서비스를 목표로 합니다.
+## 1. 프로젝트 소개
 
-> 현재는 백엔드 기능을 중심으로 개발 중이며, 실제 영화관 예매 시스템 연동이 아닌 자체 데이터를 기반으로 기능을 구현하고 있습니다.  
-> 영화 정보는 TMDB API를 활용하여 조회한 뒤 필요한 데이터를 자체 MySQL 데이터베이스에 저장하여 사용합니다.
+영화를 보는 것뿐만 아니라 다른 사람들과 감상과 의견을 나누는 과정에서도 새로운 관점을 얻을 수 있다는 점에서 영화 커뮤니티 서비스를 만들고자 했습니다.
+
+또한 CGV, 롯데시네마 등 영화관별로 예매 사이트가 나뉘어 있어 상영 정보를 한눈에 비교하기 어렵다는 점에서, 여러 영화관의 정보를 비교하고 보다 편리하게 예매할 수 있는 서비스를 구현하는 것을 목표로 했습니다.
+
+현재는 **백엔드 1차 기능 구현을 완료한 상태**이며, 이후 예외 처리 고도화, Swagger 문서화, 테스트 보강 및 React 프론트엔드 구현을 진행할 예정입니다.
 
 ---
 
-## Tech Stack
+## 2. 주요 기능
+
+### 회원 / 인증
+
+- 회원가입
+- 로그인
+- BCrypt 비밀번호 암호화
+- JWT Access Token 발급
+- JWT 기반 인증
+- 내 정보 조회
+
+### 영화
+
+- TMDB API 연동
+- 인기 영화 조회
+- TMDB 영화 상세 조회
+- TMDB 영화 데이터 DB 저장
+- 영화 목록 조회
+- 영화 상세 조회
+- 영화 제목 검색
+
+### 영화관 / 상영관 / 좌석
+
+- 영화관 목록 및 상세 조회
+- 상영관 조회
+- 상영관별 좌석 조회
+- 좌석 타입 관리
+
+### 상영 일정
+
+- 영화 / 영화관 / 날짜별 상영 일정 조회
+- 상영 일정별 좌석 상태 관리
+- 상영 일정 좌석 초기화
+- 좌석별 가격 및 예약 상태 관리
+
+### 예매
+
+- 로그인 사용자 예매 생성
+- 여러 좌석 동시 선택
+- 예매 금액 계산
+- Reservation / ReservationSeat 저장
+- 예매 완료 시 좌석 상태 `AVAILABLE -> RESERVED`
+- DB 비관적 락(`PESSIMISTIC_WRITE`)을 이용한 동시 예매 방지
+- 내 예매 목록 조회
+- 예매 취소
+- 취소 시 좌석 상태 `RESERVED -> AVAILABLE`
+
+### 리뷰
+
+- 영화별 리뷰 작성
+- 영화별 리뷰 목록 조회
+- 리뷰 수정
+- 리뷰 삭제
+- 평점 1~5 검증
+- 한 사용자가 같은 영화에 리뷰를 중복 작성하지 못하도록 제한
+- 리뷰 수정/삭제 시 작성자 확인
+
+### 커뮤니티
+
+- 게시글 작성
+- 게시글 목록 조회
+- 게시글 상세 조회
+- 게시글 조회수 증가
+- 게시글 수정
+- 게시글 삭제
+- 게시글 수정/삭제 시 작성자 확인
+- 댓글 작성
+- 게시글별 댓글 조회
+- 댓글 수정
+- 댓글 삭제
+- 댓글 수정/삭제 시 작성자 확인
+
+---
+
+## 3. 기술 스택
 
 ### Backend
+
 - Java 21
 - Spring Boot 4.1.1
+- Spring Web
 - Spring Data JPA
 - Spring Security
-- JWT
-- MySQL
-- Gradle
+- JWT (`jjwt`)
+- Bean Validation
 - Lombok
-- Validation
+- Gradle
 
-### Frontend
-- React (예정)
+### Database
+
+- MySQL
 
 ### External API
+
 - TMDB API
 
-### Tools
-- Git / GitHub
-- MySQL Workbench
-- VS Code
-- Postman (예정)
-- Swagger / OpenAPI (예정)
+### Frontend
+
+- React 예정
 
 ---
 
-## Architecture
+## 4. 시스템 구조
 
 ```text
-TMDB API
-   ↓
-Spring Boot
-   ↓
-Controller
-   ↓
-Service
-   ↓
-Repository
-   ↓
-Spring Data JPA
-   ↓
-MySQL
-
-React (예정)
-   ↑
-REST API
+React Frontend
+      |
+      | REST API
+      v
+Spring Boot Backend
+      |
+      +-------------------+
+      |                   |
+      v                   v
+Spring Data JPA        TMDB API
+      |
+      v
+    MySQL
 ```
 
 ---
 
-## Main Features
-
-- 회원가입 / 로그인
-- JWT 기반 사용자 인증
-- 영화 목록 및 상세 조회
-- 영화 검색
-- TMDB 영화 정보 조회 및 DB 저장
-- 영화관 조회
-- 상영관 조회
-- 좌석 조회
-- 영화 / 영화관 / 날짜 기준 상영 일정 조회
-- 좌석 예매
-- 예매 취소 및 예매 내역 조회
-- 영화 리뷰 및 평점
-- 커뮤니티 게시글 / 댓글
-- 마이페이지
-
----
-
-## API
-
-### Hello API
-
-```http
-GET /hello
-```
-
-### Movie API
-
-전체 영화 조회:
-
-```http
-GET /api/movies
-```
-
-영화 상세 조회:
-
-```http
-GET /api/movies/{movieId}
-```
-
-영화 제목 검색:
-
-```http
-GET /api/movies?keyword={keyword}
-```
-
-### TMDB API
-
-TMDB 인기 영화 조회:
-
-```http
-GET /api/tmdb/popular
-```
-
-TMDB 영화 상세 조회:
-
-```http
-GET /api/tmdb/movies/{movieId}
-```
-
-TMDB 영화 정보를 자체 DB에 저장:
-
-```http
-POST /api/tmdb/movies/{movieId}/save
-```
-
-### Auth API
-
-회원가입:
-
-```http
-POST /api/auth/signup
-```
-
-로그인:
-
-```http
-POST /api/auth/login
-```
-
-로그인 성공 시 JWT Access Token을 반환합니다.
-
-현재 로그인 사용자 조회:
-
-```http
-GET /api/users/me
-Authorization: Bearer {accessToken}
-```
-
-### Theater API
-
-전체 영화관 조회:
-
-```http
-GET /api/theaters
-```
-
-영화관 상세 조회:
-
-```http
-GET /api/theaters/{theaterId}
-```
-
-### Screen API
-
-특정 영화관의 상영관 조회:
-
-```http
-GET /api/theaters/{theaterId}/screens
-```
-
-상영관 상세 조회:
-
-```http
-GET /api/screens/{screenId}
-```
-
-### Seat API
-
-특정 상영관의 좌석 조회:
-
-```http
-GET /api/screens/{screenId}/seats
-```
-
-좌석 상세 조회:
-
-```http
-GET /api/seats/{seatId}
-```
-
-### Schedule API
-
-영화, 영화관, 날짜 기준 상영 일정 조회:
-
-```http
-GET /api/schedules?movieId={movieId}&theaterId={theaterId}&date={yyyy-MM-dd}
-```
-
----
-
-## Current Progress
-
-- [x] 프로젝트 기획
-- [x] 사용자 시나리오 설계
-- [x] 화면 구조 설계
-- [x] ERD 설계
-- [x] REST API 설계
-- [x] Spring Boot 프로젝트 초기 설정
-- [x] MySQL 연동
-- [x] Git / GitHub 연동
-- [x] 기본 Controller 테스트 (`GET /hello`)
-
-### Movie
-- [x] Movie Entity / Repository / Service 구현
-- [x] Movie 응답 DTO 적용
-- [x] TMDB 외부 API 연동
-- [x] TMDB 인기 영화 조회
-- [x] TMDB 영화 상세 정보 조회
-- [x] TMDB 영화 데이터 MySQL 저장
-- [x] TMDB 영화 중복 저장 방지
-- [x] 영화 목록 조회
-- [x] 영화 상세 조회
-- [x] 영화 제목 검색
-- [ ] Movie API 기능 고도화
-
-### User / Authentication
-- [x] User Entity / UserRole 구현
-- [x] UserRepository 구현
-- [x] 회원가입 요청 Validation
-- [x] 이메일 / 닉네임 중복 검사
-- [x] BCrypt 비밀번호 암호화
-- [x] 회원가입 API 구현
-- [x] 로그인 API 구현
-- [x] JWT Access Token 발급
-- [x] JWT 검증 및 사용자 식별
-- [x] Spring Security 인증 설정
-- [x] `GET /api/users/me` 구현
-- [x] 공통 예외 처리
-- [x] 로그아웃 방식 설계 (클라이언트에서 Access Token 삭제)
-
-### Theater / Reservation Base
-- [x] Theater Entity / Repository / Service / Controller 구현
-- [x] 영화관 목록 / 상세 조회
-- [x] Screen Entity / Repository / Service / Controller 구현
-- [x] Theater 1:N Screen 관계 구현
-- [x] 영화관별 상영관 조회
-- [x] Seat Entity / Repository / Service / Controller 구현
-- [x] Screen 1:N Seat 관계 구현
-- [x] 상영관별 좌석 조회
-- [x] Schedule Entity / Repository / Service / Controller 구현
-- [x] Movie 1:N Schedule 관계 구현
-- [x] Screen 1:N Schedule 관계 구현
-- [x] 영화 / 영화관 / 날짜 기준 상영 일정 조회
-- [x] 동일 상영관 / 동일 시작시간 중복 방지
-- [ ] ScheduleSeat 구현
-- [ ] Reservation 구현
-- [ ] ReservationSeat 구현
-- [ ] 예매 / 취소 / 내 예매 조회 구현
-
-### Remaining
-- [ ] 리뷰 기능 구현
-- [ ] 커뮤니티 기능 구현
-- [ ] 마이페이지 기능 확장
-- [ ] React 프론트엔드 구현
-- [ ] 테스트 보강
-- [ ] Swagger / OpenAPI 문서화
-- [ ] 배포
-
----
-
-## Current Backend Flow
-
-### Movie Data
+## 5. 주요 데이터 구조
 
 ```text
-TMDB API
-   ↓
-TmdbClient
-   ↓
-MovieService
-   ↓
-MovieRepository
-   ↓
-MySQL
-   ↓
-Movie API
+User
+ ├─ Reservation
+ │    └─ ReservationSeat
+ │          └─ ScheduleSeat
+ │                └─ Seat
+ │
+ ├─ Review
+ ├─ Post
+ └─ Comment
+
+Movie
+ ├─ Schedule
+ └─ Review
+
+Theater
+ └─ Screen
+      ├─ Seat
+      └─ Schedule
+
+Schedule
+ └─ ScheduleSeat
 ```
 
-### Authentication
+### 주요 테이블
 
-```text
-회원가입 / 로그인
-   ↓
-AuthController
-   ↓
-AuthService
-   ↓
-BCrypt / JWT
-   ↓
-UserRepository
-   ↓
-MySQL
+- `users`
+- `movies`
+- `theaters`
+- `screens`
+- `seats`
+- `schedules`
+- `schedule_seats`
+- `reservations`
+- `reservation_seats`
+- `reviews`
+- `posts`
+- `comments`
+
+---
+
+## 6. 주요 API
+
+### Auth
+
+| Method | Endpoint | 설명 | 인증 |
+|---|---|---|---|
+| POST | `/api/auth/signup` | 회원가입 | X |
+| POST | `/api/auth/login` | 로그인 / JWT 발급 | X |
+
+### User
+
+| Method | Endpoint | 설명 | 인증 |
+|---|---|---|---|
+| GET | `/api/users/me` | 내 정보 조회 | JWT |
+
+### TMDB / Movie
+
+| Method | Endpoint | 설명 | 인증 |
+|---|---|---|---|
+| GET | `/api/tmdb/popular` | TMDB 인기 영화 조회 | X |
+| GET | `/api/tmdb/movies/{movieId}` | TMDB 영화 상세 조회 | X |
+| POST | `/api/tmdb/movies/{movieId}/save` | TMDB 영화 DB 저장 | X |
+| GET | `/api/movies` | 영화 목록 조회 | X |
+| GET | `/api/movies?keyword={keyword}` | 영화 검색 | X |
+| GET | `/api/movies/{movieId}` | 영화 상세 조회 | X |
+
+### Theater / Screen / Seat
+
+| Method | Endpoint | 설명 | 인증 |
+|---|---|---|---|
+| GET | `/api/theaters` | 영화관 목록 조회 | X |
+| GET | `/api/theaters/{theaterId}` | 영화관 상세 조회 | X |
+| GET | `/api/theaters/{theaterId}/screens` | 영화관의 상영관 조회 | X |
+| GET | `/api/screens/{screenId}` | 상영관 상세 조회 | X |
+| GET | `/api/screens/{screenId}/seats` | 상영관 좌석 조회 | X |
+| GET | `/api/seats/{seatId}` | 좌석 상세 조회 | X |
+
+### Schedule
+
+| Method | Endpoint | 설명 | 인증 |
+|---|---|---|---|
+| GET | `/api/schedules?movieId={movieId}&theaterId={theaterId}&date={date}` | 상영 일정 조회 | X |
+| POST | `/api/schedules/{scheduleId}/seats/initialize` | 상영 좌석 초기화 | X |
+| GET | `/api/schedules/{scheduleId}/seats` | 상영별 좌석 상태 조회 | X |
+
+### Reservation
+
+| Method | Endpoint | 설명 | 인증 |
+|---|---|---|---|
+| POST | `/api/reservations` | 예매 생성 | JWT |
+| GET | `/api/reservations/me` | 내 예매 조회 | JWT |
+| PATCH | `/api/reservations/{reservationId}/cancel` | 예매 취소 | JWT |
+
+예매 생성 요청 예시:
+
+```json
+{
+  "scheduleId": 1,
+  "scheduleSeatIds": [1, 2]
+}
 ```
 
-JWT 인증 요청:
+### Review
+
+| Method | Endpoint | 설명 | 인증 |
+|---|---|---|---|
+| GET | `/api/movies/{movieId}/reviews` | 영화 리뷰 조회 | X |
+| POST | `/api/movies/{movieId}/reviews` | 리뷰 작성 | JWT |
+| PATCH | `/api/movies/{movieId}/reviews/{reviewId}` | 리뷰 수정 | JWT |
+| DELETE | `/api/movies/{movieId}/reviews/{reviewId}` | 리뷰 삭제 | JWT |
+
+리뷰 작성 요청 예시:
+
+```json
+{
+  "rating": 5,
+  "content": "재밌게 본 영화입니다."
+}
+```
+
+### Community Post
+
+| Method | Endpoint | 설명 | 인증 |
+|---|---|---|---|
+| GET | `/api/posts` | 게시글 목록 조회 | X |
+| GET | `/api/posts/{postId}` | 게시글 상세 조회 | X |
+| POST | `/api/posts` | 게시글 작성 | JWT |
+| PATCH | `/api/posts/{postId}` | 게시글 수정 | JWT |
+| DELETE | `/api/posts/{postId}` | 게시글 삭제 | JWT |
+
+### Comment
+
+| Method | Endpoint | 설명 | 인증 |
+|---|---|---|---|
+| GET | `/api/posts/{postId}/comments` | 게시글 댓글 조회 | X |
+| POST | `/api/posts/{postId}/comments` | 댓글 작성 | JWT |
+| PATCH | `/api/posts/{postId}/comments/{commentId}` | 댓글 수정 | JWT |
+| DELETE | `/api/posts/{postId}/comments/{commentId}` | 댓글 삭제 | JWT |
+
+---
+
+## 7. 예매 처리 흐름
 
 ```text
-Client
-   ↓
-Authorization: Bearer JWT
-   ↓
+로그인 사용자
+     |
+     v
+상영 일정 선택
+     |
+     v
+ScheduleSeat 선택
+     |
+     v
+선택 좌석 PESSIMISTIC_WRITE Lock
+     |
+     v
+AVAILABLE 상태 확인
+     |
+     v
+Reservation 생성
+     |
+     v
+ReservationSeat 생성
+     |
+     v
+ScheduleSeat 상태 변경
+AVAILABLE -> RESERVED
+```
+
+예매 취소 시에는 반대로 좌석 상태를 다시 `AVAILABLE`로 변경합니다.
+
+---
+
+## 8. JWT 인증 흐름
+
+```text
+회원 로그인
+    |
+    v
+이메일 / 비밀번호 확인
+    |
+    v
+JWT Access Token 발급
+    |
+    v
+클라이언트 저장
+    |
+    v
+Authorization: Bearer {token}
+    |
+    v
 JwtAuthenticationFilter
-   ↓
-JwtProvider
-   ↓
-SecurityContext
-   ↓
-GET /api/users/me
+    |
+    v
+SecurityContext에 userId 저장
+    |
+    v
+인증이 필요한 API 접근
 ```
 
-### Theater / Schedule
-
-```text
-Movie ───────────────┐
-                     ↓
-                  Schedule
-                     ↓
-Theater ──→ Screen ──┴──→ Seat
-```
-
-다음 단계에서는 `ScheduleSeat`를 구현하여 특정 상영 일정에서 각 좌석의 예약 가능 상태와 가격을 관리할 예정입니다.
+현재 Refresh Token은 구현하지 않았습니다.
 
 ---
 
-## Project Structure
+## 9. 환경 변수
 
-```text
-movie-platform
-├── backend
-│   ├── src
-│   │   ├── main
-│   │   │   ├── java
-│   │   │   │   └── com.movieplatform.backend
-│   │   │   │       ├── client
-│   │   │   │       ├── config
-│   │   │   │       ├── controller
-│   │   │   │       ├── dto
-│   │   │   │       │   ├── auth
-│   │   │   │       │   ├── movie
-│   │   │   │       │   ├── schedule
-│   │   │   │       │   ├── screen
-│   │   │   │       │   ├── seat
-│   │   │   │       │   ├── theater
-│   │   │   │       │   ├── tmdb
-│   │   │   │       │   └── user
-│   │   │   │       ├── entity
-│   │   │   │       ├── exception
-│   │   │   │       ├── repository
-│   │   │   │       ├── security
-│   │   │   │       └── service
-│   │   │   └── resources
-│   │   │       └── application.properties
-│   │   └── test
-│   ├── build.gradle
-│   └── settings.gradle
-├── .gitignore
-└── README.md
+보안상 DB 비밀번호, TMDB Access Token, JWT Secret은 코드에 직접 작성하지 않습니다.
+
+`application.properties` 예시:
+
+```properties
+spring.application.name=backend
+
+spring.datasource.url=jdbc:mysql://localhost:3306/movie_platform?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+spring.datasource.username=root
+spring.datasource.password=${DB_PASSWORD}
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+tmdb.access-token=${TMDB_ACCESS_TOKEN}
+
+jwt.secret=${JWT_SECRET}
+jwt.expiration=3600000
 ```
 
----
-
-## Run Backend
-
-MySQL 서버 실행 후 환경변수를 설정합니다.
+실행 전 환경 변수 설정:
 
 ```bash
-export JAVA_HOME=$(/usr/libexec/java_home -v 21)
-export PATH="$JAVA_HOME/bin:$PATH"
-export DB_PASSWORD='YOUR_MYSQL_PASSWORD'
+export DB_PASSWORD='YOUR_DB_PASSWORD'
 export TMDB_ACCESS_TOKEN='YOUR_TMDB_ACCESS_TOKEN'
 export JWT_SECRET='YOUR_JWT_SECRET'
 ```
 
-백엔드 실행:
+JWT Secret 생성 예시:
+
+```bash
+openssl rand -base64 32
+```
+
+> 실제 비밀번호, TMDB Token, JWT Secret은 GitHub에 커밋하지 않습니다.
+
+---
+
+## 10. 실행 방법
+
+### MySQL 실행
+
+```bash
+brew services start mysql
+```
+
+### Database 생성
+
+```sql
+CREATE DATABASE movie_platform
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+```
+
+### Java 21 설정
+
+macOS에서 필요할 경우:
+
+```bash
+export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+export PATH="$JAVA_HOME/bin:$PATH"
+```
+
+### Backend 실행
 
 ```bash
 cd backend
 ./gradlew bootRun
 ```
 
-서버 기본 주소:
+기본 실행 주소:
 
 ```text
 http://localhost:8080
@@ -401,32 +422,106 @@ http://localhost:8080
 
 ---
 
-## Security
+## 11. 프로젝트 구조
 
-민감한 정보는 코드에 직접 작성하지 않고 환경변수로 관리합니다.
-
-```properties
-spring.datasource.password=${DB_PASSWORD}
-tmdb.access-token=${TMDB_ACCESS_TOKEN}
-jwt.secret=${JWT_SECRET}
+```text
+movie-platform/
+├── backend/
+│   ├── src/main/java/com/movieplatform/backend/
+│   │   ├── config/
+│   │   ├── controller/
+│   │   ├── dto/
+│   │   │   ├── comment/
+│   │   │   ├── post/
+│   │   │   ├── reservation/
+│   │   │   ├── review/
+│   │   │   └── schedule/
+│   │   ├── entity/
+│   │   ├── exception/
+│   │   ├── repository/
+│   │   ├── security/
+│   │   └── service/
+│   │
+│   └── src/main/resources/
+│       └── application.properties
+│
+└── README.md
 ```
-
-실제 DB 비밀번호, TMDB Access Token, JWT Secret은 GitHub에 업로드하지 않습니다.
 
 ---
 
-## Next Step
+## 12. 현재 개발 상태
 
-다음 개발 단계:
+### Backend 1차 기능 구현 완료
+
+- [x] Spring Boot 프로젝트 구성
+- [x] MySQL 연결
+- [x] TMDB API 연동
+- [x] 영화 저장 / 조회 / 검색
+- [x] 회원가입
+- [x] BCrypt 비밀번호 암호화
+- [x] 로그인
+- [x] JWT 인증
+- [x] 내 정보 조회
+- [x] Theater
+- [x] Screen
+- [x] Seat
+- [x] Schedule
+- [x] ScheduleSeat
+- [x] 예매 생성
+- [x] 예매 동시성 처리
+- [x] 내 예매 조회
+- [x] 예매 취소
+- [x] 리뷰 CRUD
+- [x] 게시글 CRUD
+- [x] 댓글 CRUD
+
+### 다음 작업
+
+- [ ] 예외 처리 및 HTTP Status 세분화
+- [ ] Swagger / OpenAPI 문서화
+- [ ] API 통합 테스트
+- [ ] Repository / Service 테스트 보강
+- [ ] React 프론트엔드 구현
+- [ ] 프론트엔드와 백엔드 연동
+- [ ] 배포
+
+---
+
+## 13. 향후 개선 예정
+
+- HTTP 상태 코드 및 Custom Exception 구조 개선
+- Swagger를 통한 API 문서화
+- 영화 / 게시글 페이지네이션
+- 영화 정렬 및 필터링
+- 영화 평균 평점 제공
+- Refresh Token 도입
+- 관리자 기능
+- 상영 일정 등록 관리 기능
+- 결제 기능
+- 테스트 코드 보강
+- 배포 환경 구성
+
+---
+
+## 14. 현재 상태 요약
+
+현재 백엔드는 영화 탐색부터 예매, 리뷰, 커뮤니티까지 서비스의 핵심 흐름을 수행할 수 있는 **1차 MVP 기능 구현이 완료된 상태**입니다.
 
 ```text
-ScheduleSeat
+영화 탐색
    ↓
-Reservation
+상영 정보 확인
    ↓
-ReservationSeat
+좌석 확인
    ↓
-예매 / 취소 / 내 예매 조회
+예매
+   ↓
+내 예매 조회 / 취소
+   ↓
+리뷰 작성
+   ↓
+커뮤니티 게시글 / 댓글
 ```
 
-현재 전체 프로젝트 기준으로는 약 40~45% 정도 진행된 상태이며, 백엔드 기준으로는 절반 이상 구현된 상태입니다.
+다음 단계에서는 기능을 추가하기보다 기존 백엔드의 예외 처리, API 문서화, 테스트를 정리한 뒤 React 프론트엔드 구현을 진행합니다.
