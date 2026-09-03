@@ -157,4 +157,50 @@ public List<ReservationResponseDto> getMyReservations(
             })
             .toList();
 }
+@Transactional
+public ReservationResponseDto cancelReservation(
+        Long userId,
+        Long reservationId
+) {
+
+    Reservation reservation =
+            reservationRepository
+                    .findById(reservationId)
+                    .orElseThrow(() ->
+                            new IllegalArgumentException(
+                                    "예매 정보를 찾을 수 없습니다."
+                            )
+                    );
+
+    if (!reservation
+            .getUser()
+            .getUserId()
+            .equals(userId)) {
+
+        throw new IllegalArgumentException(
+                "본인의 예매만 취소할 수 있습니다."
+        );
+    }
+
+    List<ReservationSeat> reservationSeats =
+            reservationSeatRepository
+                    .findByReservation_ReservationId(
+                            reservationId
+                    );
+
+    reservation.cancel();
+
+    for (ReservationSeat reservationSeat
+            : reservationSeats) {
+
+        reservationSeat
+                .getScheduleSeat()
+                .release();
+    }
+
+    return ReservationResponseDto.from(
+            reservation,
+            reservationSeats
+    );
+}
 }

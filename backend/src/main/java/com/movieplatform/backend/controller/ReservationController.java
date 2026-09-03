@@ -45,4 +45,19 @@ public class ReservationController {
         return reservationService
                 .getMyReservations(userId);
         }
+    @PatchMapping("/{reservationId}/cancel")
+        public ReservationResponseDto cancelReservation(
+                Authentication authentication,
+                @PathVariable Long reservationId
+        ) {
+
+        Long userId =
+                (Long) authentication.getPrincipal();
+
+        return reservationService
+                .cancelReservation(
+                        userId,
+                        reservationId
+                );
+        }
 }
