@@ -8,7 +8,9 @@
 
 또한 CGV, 롯데시네마 등 영화관별로 예매 사이트가 나뉘어 있어 상영 정보를 한눈에 비교하기 어렵다는 점에서, 여러 영화관의 정보를 비교하고 보다 편리하게 예매할 수 있는 서비스를 구현하는 것을 목표로 했습니다.
 
-현재는 **백엔드 1차 기능 구현을 완료한 상태**이며, 이후 예외 처리 고도화, Swagger 문서화, 테스트 보강 및 React 프론트엔드 구현을 진행할 예정입니다.
+현재 **Spring Boot 기반 백엔드 1차 MVP 구현을 완료**했으며, JWT 기반 인증, 영화/상영 일정/좌석 관리, 좌석 예매 및 취소, 비관적 락을 이용한 동시 예매 방지, 리뷰, 커뮤니티 게시글/댓글, 공통 예외 처리, Swagger/OpenAPI 문서화, 핵심 Service 및 JWT 단위 테스트까지 구현했습니다.
+
+다음 단계에서는 React 프론트엔드를 구현하여 현재 백엔드 API와 연동할 예정입니다.
 
 ---
 
@@ -92,7 +94,7 @@
 
 - Java 21
 - Spring Boot 4.1.1
-- Spring Web
+- Spring Web MVC
 - Spring Data JPA
 - Spring Security
 - JWT (`jjwt`)
@@ -103,10 +105,23 @@
 ### Database
 
 - MySQL
+- H2 (Test)
 
 ### External API
 
 - TMDB API
+
+### API Documentation
+
+- Springdoc OpenAPI
+- Swagger UI
+
+### Test
+
+- JUnit 5
+- Mockito
+- Spring Security Test
+- H2 In-Memory Database
 
 ### Frontend
 
@@ -130,6 +145,21 @@ Spring Data JPA        TMDB API
       |
       v
     MySQL
+```
+
+백엔드 내부에서는 다음과 같은 구조를 사용합니다.
+
+```text
+Controller
+    |
+    v
+Service
+    |
+    v
+Repository
+    |
+    v
+Database
 ```
 
 ---
@@ -308,6 +338,12 @@ AVAILABLE -> RESERVED
 
 예매 취소 시에는 반대로 좌석 상태를 다시 `AVAILABLE`로 변경합니다.
 
+### 동시 예매 처리
+
+같은 좌석에 여러 사용자가 동시에 예매 요청을 보내는 상황을 고려하여 `ScheduleSeat` 조회 시 DB의 `PESSIMISTIC_WRITE` 락을 사용했습니다.
+
+이를 통해 한 트랜잭션이 좌석을 확인하고 예약 처리하는 동안 다른 트랜잭션이 동일 좌석을 동시에 변경하지 못하도록 제한합니다.
+
 ---
 
 ## 8. JWT 인증 흐름
@@ -337,11 +373,58 @@ SecurityContext에 userId 저장
 인증이 필요한 API 접근
 ```
 
-현재 Refresh Token은 구현하지 않았습니다.
+현재 Access Token 방식으로 인증하며 Refresh Token은 구현하지 않았습니다.
 
 ---
 
-## 9. 환경 변수
+## 9. 예외 처리
+
+공통 예외 응답을 위해 `GlobalExceptionHandler`를 사용합니다.
+
+대표적인 HTTP 상태 코드는 다음과 같습니다.
+
+| Status | 의미 | 예시 |
+|---|---|---|
+| `400 Bad Request` | 잘못된 요청 | 잘못된 좌석 / URL 관계 |
+| `401 Unauthorized` | 인증 실패 | JWT 없음 / 유효하지 않은 JWT |
+| `403 Forbidden` | 권한 없음 | 다른 사용자의 게시글 수정 |
+| `404 Not Found` | 리소스 없음 | 존재하지 않는 영화 / 게시글 |
+| `409 Conflict` | 상태 충돌 | 중복 리뷰 / 이미 예약된 좌석 |
+
+공통 오류 응답 예시:
+
+```json
+{
+  "status": 404,
+  "message": "영화를 찾을 수 없습니다."
+}
+```
+
+---
+
+## 10. Swagger / OpenAPI
+
+Swagger UI를 통해 구현된 API 목록과 요청/응답 구조를 확인할 수 있습니다.
+
+백엔드 실행 후:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
+OpenAPI JSON:
+
+```text
+http://localhost:8080/v3/api-docs
+```
+
+JWT 인증이 필요한 API는 Swagger의 `Authorize` 버튼을 통해 Access Token을 입력한 뒤 테스트할 수 있습니다.
+
+Bearer 인증 방식이 적용된 API에는 Swagger UI에서 인증 표시가 나타납니다.
+
+---
+
+## 11. 환경 변수
 
 보안상 DB 비밀번호, TMDB Access Token, JWT Secret은 코드에 직접 작성하지 않습니다.
 
@@ -378,11 +461,11 @@ JWT Secret 생성 예시:
 openssl rand -base64 32
 ```
 
-> 실제 비밀번호, TMDB Token, JWT Secret은 GitHub에 커밋하지 않습니다.
+> 실제 DB 비밀번호, TMDB Access Token, JWT Secret은 GitHub에 커밋하지 않습니다.
 
 ---
 
-## 10. 실행 방법
+## 12. 실행 방법
 
 ### MySQL 실행
 
@@ -422,37 +505,97 @@ http://localhost:8080
 
 ---
 
-## 11. 프로젝트 구조
+## 13. 테스트
+
+테스트 환경에서는 실제 MySQL 대신 H2 In-Memory Database를 사용합니다.
+
+전체 테스트 실행:
+
+```bash
+cd backend
+./gradlew clean test
+```
+
+테스트 결과 확인:
+
+```bash
+open build/reports/tests/test/index.html
+```
+
+### 작성된 주요 테스트
+
+- `MovieServiceTest`
+  - 존재하지 않는 영화 처리
+  - 중복 TMDB 영화 저장 방지
+  - 영화 목록 조회
+- `ReviewServiceTest`
+  - 중복 리뷰 방지
+  - 존재하지 않는 영화 처리
+  - 리뷰 작성자 권한 검증
+- `PostServiceTest`
+  - 게시글 조회
+  - 게시글 작성자 권한 검증
+- `CommentServiceTest`
+  - 댓글 / 게시글 관계 검증
+  - 댓글 작성자 권한 검증
+- `ReservationServiceTest`
+  - 존재하지 않는 사용자 / 상영 일정 / 좌석 검증
+  - 중복 좌석 검증
+  - 다른 상영 일정 좌석 검증
+  - 이미 예약된 좌석 검증
+  - 예매 취소 권한 검증
+  - 중복 취소 방지
+- `AuthServiceTest`
+  - 회원가입
+  - 이메일 / 닉네임 중복 검증
+  - 비밀번호 암호화
+  - 로그인 성공 / 실패
+- `JwtProviderTest`
+  - JWT 생성
+  - JWT 검증
+  - userId 추출
+  - 변조 토큰 검증
+  - 잘못된 Secret 검증
+  - 만료 토큰 검증
+
+---
+
+## 14. 프로젝트 구조
 
 ```text
 movie-platform/
 ├── backend/
-│   ├── src/main/java/com/movieplatform/backend/
-│   │   ├── config/
-│   │   ├── controller/
-│   │   ├── dto/
-│   │   │   ├── comment/
-│   │   │   ├── post/
-│   │   │   ├── reservation/
-│   │   │   ├── review/
-│   │   │   └── schedule/
-│   │   ├── entity/
-│   │   ├── exception/
-│   │   ├── repository/
-│   │   ├── security/
-│   │   └── service/
-│   │
-│   └── src/main/resources/
-│       └── application.properties
-│
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/com/movieplatform/backend/
+│   │   │   │   ├── client/
+│   │   │   │   ├── config/
+│   │   │   │   ├── controller/
+│   │   │   │   ├── dto/
+│   │   │   │   ├── entity/
+│   │   │   │   ├── exception/
+│   │   │   │   ├── repository/
+│   │   │   │   ├── security/
+│   │   │   │   └── service/
+│   │   │   └── resources/
+│   │   │       └── application.properties
+│   │   └── test/
+│   │       ├── java/com/movieplatform/backend/
+│   │       │   ├── security/
+│   │       │   └── service/
+│   │       └── resources/
+│   │           └── application.properties
+│   ├── build.gradle
+│   └── settings.gradle
+├── .gitignore
 └── README.md
 ```
 
 ---
 
-## 12. 현재 개발 상태
+## 15. 현재 개발 상태
 
-### Backend 1차 기능 구현 완료
+### Backend 1차 MVP 완료
 
 - [x] Spring Boot 프로젝트 구성
 - [x] MySQL 연결
@@ -475,38 +618,49 @@ movie-platform/
 - [x] 리뷰 CRUD
 - [x] 게시글 CRUD
 - [x] 댓글 CRUD
+- [x] 공통 예외 응답
+- [x] 주요 HTTP Status 세분화
+- [x] Swagger / OpenAPI
+- [x] Swagger JWT 인증 연동
+- [x] H2 테스트 환경
+- [x] 핵심 Service 단위 테스트
+- [x] AuthService 테스트
+- [x] JWT 테스트
 
 ### 다음 작업
 
-- [ ] 예외 처리 및 HTTP Status 세분화
-- [ ] Swagger / OpenAPI 문서화
-- [ ] API 통합 테스트
-- [ ] Repository / Service 테스트 보강
-- [ ] React 프론트엔드 구현
+- [ ] React 프론트엔드 프로젝트 구성
+- [ ] 영화 목록 / 상세 화면
+- [ ] 로그인 / 회원가입 화면
+- [ ] 상영 일정 조회 화면
+- [ ] 좌석 선택 및 예매 화면
+- [ ] 내 예매 화면
+- [ ] 리뷰 UI
+- [ ] 커뮤니티 UI
 - [ ] 프론트엔드와 백엔드 연동
+- [ ] API 통합 테스트 보강
 - [ ] 배포
 
 ---
 
-## 13. 향후 개선 예정
+## 16. 향후 개선 예정
 
-- HTTP 상태 코드 및 Custom Exception 구조 개선
-- Swagger를 통한 API 문서화
 - 영화 / 게시글 페이지네이션
 - 영화 정렬 및 필터링
 - 영화 평균 평점 제공
 - Refresh Token 도입
-- 관리자 기능
-- 상영 일정 등록 관리 기능
+- 관리자 권한 및 관리 기능
+- 상영 일정 등록 / 수정 / 삭제 기능
 - 결제 기능
-- 테스트 코드 보강
+- Controller / API 통합 테스트
+- 예매 취소 동시성 처리 보강
 - 배포 환경 구성
 
 ---
 
-## 14. 현재 상태 요약
+## 17. 현재 상태 요약
 
-현재 백엔드는 영화 탐색부터 예매, 리뷰, 커뮤니티까지 서비스의 핵심 흐름을 수행할 수 있는 **1차 MVP 기능 구현이 완료된 상태**입니다.
+현재 백엔드는 영화 탐색부터 예매, 리뷰, 커뮤니티까지 서비스의 핵심 흐름을 수행할 수 있는 **1차 MVP 구현이 완료된 상태**입니다.
 
 ```text
 영화 탐색
@@ -524,4 +678,6 @@ movie-platform/
 커뮤니티 게시글 / 댓글
 ```
 
-다음 단계에서는 기능을 추가하기보다 기존 백엔드의 예외 처리, API 문서화, 테스트를 정리한 뒤 React 프론트엔드 구현을 진행합니다.
+백엔드 핵심 기능 구현 이후 공통 예외 처리, Swagger/OpenAPI 문서화, JWT Swagger 인증 연동 및 핵심 Service/JWT 단위 테스트까지 추가했습니다.
+
+다음 개발 단계는 **React 프론트엔드 구현 및 백엔드 API 연동**입니다.
