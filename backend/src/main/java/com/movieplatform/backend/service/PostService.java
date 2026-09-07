@@ -4,6 +4,8 @@ import com.movieplatform.backend.dto.post.PostRequest;
 import com.movieplatform.backend.dto.post.PostResponseDto;
 import com.movieplatform.backend.entity.Post;
 import com.movieplatform.backend.entity.User;
+import com.movieplatform.backend.exception.ForbiddenException;
+import com.movieplatform.backend.exception.NotFoundException;
 import com.movieplatform.backend.repository.PostRepository;
 import com.movieplatform.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,7 @@ public class PostService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new NotFoundException(
                                 "사용자를 찾을 수 없습니다."
                         )
                 );
@@ -44,7 +46,8 @@ public class PostService {
                 request.content()
         );
 
-        Post savedPost = postRepository.save(post);
+        Post savedPost =
+                postRepository.save(post);
 
         return PostResponseDto.from(savedPost);
     }
@@ -66,7 +69,7 @@ public class PostService {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new NotFoundException(
                                 "게시글을 찾을 수 없습니다."
                         )
                 );
@@ -85,7 +88,7 @@ public class PostService {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new NotFoundException(
                                 "게시글을 찾을 수 없습니다."
                         )
                 );
@@ -94,7 +97,7 @@ public class PostService {
                 .getUserId()
                 .equals(userId)) {
 
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "본인의 게시글만 수정할 수 있습니다."
             );
         }
@@ -115,7 +118,7 @@ public class PostService {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new NotFoundException(
                                 "게시글을 찾을 수 없습니다."
                         )
                 );
@@ -124,7 +127,7 @@ public class PostService {
                 .getUserId()
                 .equals(userId)) {
 
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "본인의 게시글만 삭제할 수 있습니다."
             );
         }

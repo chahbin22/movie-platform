@@ -5,6 +5,8 @@ import com.movieplatform.backend.dto.comment.CommentResponseDto;
 import com.movieplatform.backend.entity.Comment;
 import com.movieplatform.backend.entity.Post;
 import com.movieplatform.backend.entity.User;
+import com.movieplatform.backend.exception.ForbiddenException;
+import com.movieplatform.backend.exception.NotFoundException;
 import com.movieplatform.backend.repository.CommentRepository;
 import com.movieplatform.backend.repository.PostRepository;
 import com.movieplatform.backend.repository.UserRepository;
@@ -39,14 +41,14 @@ public class CommentService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new NotFoundException(
                                 "사용자를 찾을 수 없습니다."
                         )
                 );
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new NotFoundException(
                                 "게시글을 찾을 수 없습니다."
                         )
                 );
@@ -69,7 +71,7 @@ public class CommentService {
     ) {
 
         if (!postRepository.existsById(postId)) {
-            throw new IllegalArgumentException(
+            throw new NotFoundException(
                     "게시글을 찾을 수 없습니다."
             );
         }
@@ -92,7 +94,7 @@ public class CommentService {
         Comment comment =
                 commentRepository.findById(commentId)
                         .orElseThrow(() ->
-                                new IllegalArgumentException(
+                                new NotFoundException(
                                         "댓글을 찾을 수 없습니다."
                                 )
                         );
@@ -110,7 +112,7 @@ public class CommentService {
                 .getUserId()
                 .equals(userId)) {
 
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "본인의 댓글만 수정할 수 있습니다."
             );
         }
@@ -130,7 +132,7 @@ public class CommentService {
         Comment comment =
                 commentRepository.findById(commentId)
                         .orElseThrow(() ->
-                                new IllegalArgumentException(
+                                new NotFoundException(
                                         "댓글을 찾을 수 없습니다."
                                 )
                         );
@@ -148,7 +150,7 @@ public class CommentService {
                 .getUserId()
                 .equals(userId)) {
 
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "본인의 댓글만 삭제할 수 있습니다."
             );
         }

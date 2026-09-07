@@ -5,6 +5,9 @@ import com.movieplatform.backend.dto.review.ReviewResponseDto;
 import com.movieplatform.backend.entity.Movie;
 import com.movieplatform.backend.entity.Review;
 import com.movieplatform.backend.entity.User;
+import com.movieplatform.backend.exception.ConflictException;
+import com.movieplatform.backend.exception.ForbiddenException;
+import com.movieplatform.backend.exception.NotFoundException;
 import com.movieplatform.backend.repository.MovieRepository;
 import com.movieplatform.backend.repository.ReviewRepository;
 import com.movieplatform.backend.repository.UserRepository;
@@ -43,21 +46,21 @@ public class ReviewService {
                         movieId
                 )) {
 
-            throw new IllegalArgumentException(
+            throw new ConflictException(
                     "이미 이 영화에 리뷰를 작성했습니다."
             );
         }
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new NotFoundException(
                                 "사용자를 찾을 수 없습니다."
                         )
                 );
 
         Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new NotFoundException(
                                 "영화를 찾을 수 없습니다."
                         )
                 );
@@ -81,7 +84,7 @@ public class ReviewService {
     ) {
 
         if (!movieRepository.existsById(movieId)) {
-            throw new IllegalArgumentException(
+            throw new NotFoundException(
                     "영화를 찾을 수 없습니다."
             );
         }
@@ -92,6 +95,7 @@ public class ReviewService {
                 .map(ReviewResponseDto::from)
                 .toList();
     }
+
     @Transactional
     public ReviewResponseDto updateReview(
             Long userId,
@@ -102,7 +106,7 @@ public class ReviewService {
 
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new NotFoundException(
                                 "리뷰를 찾을 수 없습니다."
                         )
                 );
@@ -120,7 +124,7 @@ public class ReviewService {
                 .getUserId()
                 .equals(userId)) {
 
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "본인의 리뷰만 수정할 수 있습니다."
             );
         }
@@ -132,6 +136,7 @@ public class ReviewService {
 
         return ReviewResponseDto.from(review);
     }
+
     @Transactional
     public void deleteReview(
             Long userId,
@@ -141,7 +146,7 @@ public class ReviewService {
 
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new NotFoundException(
                                 "리뷰를 찾을 수 없습니다."
                         )
                 );
@@ -159,7 +164,7 @@ public class ReviewService {
                 .getUserId()
                 .equals(userId)) {
 
-            throw new IllegalArgumentException(
+            throw new ForbiddenException(
                     "본인의 리뷰만 삭제할 수 있습니다."
             );
         }

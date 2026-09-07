@@ -1,9 +1,9 @@
 package com.movieplatform.backend.controller;
 
 import com.movieplatform.backend.client.TmdbClient;
+import com.movieplatform.backend.dto.movie.MovieResponseDto;
 import com.movieplatform.backend.dto.tmdb.TmdbMovieDetailDto;
 import com.movieplatform.backend.dto.tmdb.TmdbMovieResponse;
-import com.movieplatform.backend.entity.Movie;
 import com.movieplatform.backend.service.MovieService;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +35,7 @@ public class TmdbController {
     }
 
     @PostMapping("/movies/{movieId}/save")
-    public Movie saveMovie(
+    public MovieResponseDto saveMovie(
             @PathVariable Long movieId
     ) {
         return movieService.saveMovieFromTmdb(movieId);
