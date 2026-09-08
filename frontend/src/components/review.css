@@ -1,0 +1,293 @@
+.review-section {
+  margin-top: 64px;
+  padding-top: 40px;
+  border-top: 1px solid #ddd;
+}
+
+.review-header {
+  margin-bottom: 24px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.review-header h2 {
+  margin: 0 0 8px;
+  font-size: 30px;
+}
+
+.review-header p {
+  margin: 0;
+  color: #666;
+}
+
+.review-count {
+  color: #777;
+}
+
+.review-error {
+  margin-bottom: 20px;
+}
+
+.review-empty {
+  padding: 32px;
+
+  background-color: white;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  color: #666;
+  text-align: center;
+}
+
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.review-card {
+  padding: 22px;
+
+  background-color: white;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.review-nickname {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.review-stars {
+  color: #e0a800;
+  letter-spacing: 2px;
+}
+
+.review-date {
+  color: #999;
+  font-size: 13px;
+}
+
+.review-content {
+  margin: 20px 0 0;
+
+  line-height: 1.7;
+
+  white-space: pre-wrap;
+}
+
+.review-actions {
+  margin-top: 18px;
+
+  display: flex;
+  gap: 10px;
+}
+
+.review-actions button {
+  padding: 7px 12px;
+
+  border: 1px solid #ccc;
+  border-radius: 6px;
+
+  background-color: white;
+
+  cursor: pointer;
+}
+
+.review-actions button:hover {
+  background-color: #eee;
+}
+
+.review-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.review-write-area {
+  margin-top: 32px;
+}
+
+.review-form {
+  padding: 24px;
+
+  background-color: white;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.review-form h3 {
+  margin-top: 0;
+}
+
+.review-rating-field {
+  margin-bottom: 14px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.review-rating-field label {
+  font-weight: bold;
+}
+
+.review-rating-field select {
+  padding: 8px 12px;
+
+  border: 1px solid #ccc;
+  border-radius: 6px;
+
+  background-color: white;
+}
+
+.review-form textarea,
+.review-edit-form textarea {
+  width: 100%;
+  min-height: 130px;
+
+  padding: 14px;
+
+  resize: vertical;
+
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
+  font: inherit;
+  line-height: 1.6;
+}
+
+.review-form textarea:focus,
+.review-edit-form textarea:focus {
+  outline: none;
+  border-color: #555;
+}
+
+.review-form-bottom {
+  margin-top: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.review-form-bottom span {
+  color: #888;
+  font-size: 13px;
+}
+
+.review-primary-button {
+  padding: 10px 18px;
+
+  border: none;
+  border-radius: 7px;
+
+  background-color: #111;
+  color: white;
+
+  cursor: pointer;
+}
+
+.review-primary-button:hover {
+  background-color: #333;
+}
+
+.review-primary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.review-secondary-button {
+  padding: 10px 18px;
+
+  border: 1px solid #ccc;
+  border-radius: 7px;
+
+  background-color: white;
+
+  cursor: pointer;
+}
+
+.review-secondary-button:hover {
+  background-color: #eee;
+}
+
+.review-edit-form {
+  margin-top: 20px;
+}
+
+.review-edit-actions {
+  margin-top: 12px;
+
+  display: flex;
+  gap: 10px;
+}
+
+.review-login-message {
+  padding: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  background-color: white;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.review-login-message p {
+  margin: 0;
+}
+
+.review-login-link {
+  padding: 9px 16px;
+
+  background-color: #111;
+  color: white;
+
+  border-radius: 7px;
+}
+
+.review-my-message {
+  margin: 0;
+
+  padding: 20px;
+
+  background-color: white;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .review-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .review-login-message {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .review-login-link {
+    text-align: center;
+  }
+}
