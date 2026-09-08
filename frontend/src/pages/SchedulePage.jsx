@@ -4,12 +4,14 @@ import {
 } from 'react'
 import {
   Link,
+  useNavigate,
   useParams,
 } from 'react-router-dom'
 import api from '../api/axios'
 
 function SchedulePage() {
   const { movieId } = useParams()
+  const navigate = useNavigate()
 
   const [movie, setMovie] = useState(null)
   const [theaters, setTheaters] =
@@ -104,6 +106,26 @@ function SchedulePage() {
     } finally {
       setScheduleLoading(false)
     }
+  }
+
+  const handleScheduleSelect = (
+    scheduleId,
+  ) => {
+    navigate(
+      `/schedules/${scheduleId}/seats`,
+    )
+  }
+
+  const formatTime = (startTime) => {
+    if (!startTime) {
+      return ''
+    }
+
+    return startTime.slice(11, 16)
+  }
+
+  const formatPrice = (price) => {
+    return price.toLocaleString('ko-KR')
   }
 
   if (loading) {
@@ -208,18 +230,56 @@ function SchedulePage() {
               </p>
             ) : (
               <>
-                <p>
+                <p className="schedule-count">
                   총 {schedules.length}개의
                   상영 일정이 있습니다.
                 </p>
 
-                <pre className="schedule-json">
-                  {JSON.stringify(
-                    schedules,
-                    null,
-                    2,
+                <div className="schedule-list">
+                  {schedules.map(
+                    (schedule) => (
+                      <button
+                        key={
+                          schedule.scheduleId
+                        }
+                        type="button"
+                        className="schedule-card"
+                        onClick={() =>
+                          handleScheduleSelect(
+                            schedule.scheduleId,
+                          )
+                        }
+                      >
+                        <div className="schedule-card-header">
+                          <strong>
+                            {
+                              schedule.theaterName
+                            }
+                          </strong>
+
+                          <span>
+                            {
+                              schedule.screenName
+                            }
+                          </span>
+                        </div>
+
+                        <div className="schedule-time">
+                          {formatTime(
+                            schedule.startTime,
+                          )}
+                        </div>
+
+                        <div className="schedule-price">
+                          {formatPrice(
+                            schedule.basePrice,
+                          )}
+                          원
+                        </div>
+                      </button>
+                    ),
                   )}
-                </pre>
+                </div>
               </>
             )}
           </div>

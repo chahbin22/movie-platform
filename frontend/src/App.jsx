@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import MovieDetailPage from './pages/MovieDetailPage'
 import SchedulePage from './pages/SchedulePage'
+import SeatPage from './pages/SeatPage'
 
 function App() {
   return (
@@ -26,6 +27,11 @@ function App() {
           <Route
             path="/movies/:movieId/schedules"
             element={<SchedulePage />}
+          />
+
+          <Route
+            path="/schedules/:scheduleId/seats"
+            element={<SeatPage />}
           />
 
           <Route
