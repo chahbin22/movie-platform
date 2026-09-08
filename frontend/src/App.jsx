@@ -3,6 +3,7 @@ import Header from './components/Header'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
+import MovieDetailPage from './pages/MovieDetailPage'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <main className="container">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/movies/:movieId" element={<MovieDetailPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
         </Routes>

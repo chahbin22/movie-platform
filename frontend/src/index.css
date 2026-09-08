@@ -74,11 +74,25 @@ input {
   gap: 24px;
 }
 
+.movie-card-link {
+  display: block;
+}
+
 .movie-card {
   overflow: hidden;
   background-color: white;
   border-radius: 10px;
   border: 1px solid #ddd;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.movie-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px
+    rgba(0, 0, 0, 0.12);
 }
 
 .movie-poster-wrapper {
@@ -129,6 +143,94 @@ input {
   font-size: 13px;
 }
 
+.movie-detail {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.movie-detail-poster {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: #ddd;
+}
+
+.movie-detail-poster img {
+  width: 100%;
+  display: block;
+}
+
+.movie-detail-placeholder {
+  aspect-ratio: 2 / 3;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #777;
+}
+
+.movie-detail-info h1 {
+  margin-top: 0;
+  margin-bottom: 24px;
+
+  font-size: 36px;
+}
+
+.movie-detail-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.movie-detail-meta p {
+  margin: 0;
+
+  display: flex;
+  gap: 16px;
+}
+
+.movie-detail-meta strong {
+  width: 80px;
+}
+
+.movie-detail-meta span {
+  color: #555;
+}
+
+.movie-description {
+  margin-top: 36px;
+}
+
+.movie-description h2 {
+  margin-bottom: 12px;
+}
+
+.movie-description p {
+  line-height: 1.7;
+  color: #555;
+}
+
+.reservation-button {
+  margin-top: 30px;
+
+  padding: 14px 28px;
+
+  border: none;
+  border-radius: 8px;
+
+  background-color: #111;
+  color: white;
+
+  cursor: pointer;
+}
+
+.reservation-button:hover {
+  background-color: #333;
+}
+
 .form {
   width: 100%;
   max-width: 400px;
@@ -159,4 +261,14 @@ input {
   color: white;
 
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .movie-detail {
+    grid-template-columns: 1fr;
+  }
+
+  .movie-detail-poster {
+    max-width: 320px;
+  }
 }
