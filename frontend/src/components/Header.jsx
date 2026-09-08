@@ -38,6 +38,10 @@ function Header() {
             <>
               {isLoggedIn ? (
                 <>
+                  <Link to="/my/reservations">
+                    내 예매
+                  </Link>
+
                   <span>
                     {user.nickname}
                   </span>

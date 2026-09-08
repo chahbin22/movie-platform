@@ -6,6 +6,7 @@ import SignupPage from './pages/SignupPage'
 import MovieDetailPage from './pages/MovieDetailPage'
 import SchedulePage from './pages/SchedulePage'
 import SeatPage from './pages/SeatPage'
+import MyReservationPage from './pages/MyReservationPage'
 
 function App() {
   return (
@@ -32,6 +33,11 @@ function App() {
           <Route
             path="/schedules/:scheduleId/seats"
             element={<SeatPage />}
+          />
+
+          <Route
+            path="/my/reservations"
+            element={<MyReservationPage />}
           />
 
           <Route
