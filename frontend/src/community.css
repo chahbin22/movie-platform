@@ -1,0 +1,312 @@
+.community-header {
+  margin-bottom: 30px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.community-header h1 {
+  margin: 0 0 8px;
+  font-size: 36px;
+}
+
+.community-header p {
+  margin: 0;
+  color: #666;
+}
+
+.community-primary-button,
+.community-secondary-button,
+.community-danger-button {
+  display: inline-block;
+
+  padding: 10px 18px;
+
+  border-radius: 8px;
+
+  font: inherit;
+  cursor: pointer;
+}
+
+.community-primary-button {
+  border: none;
+
+  background-color: #111;
+  color: white;
+}
+
+.community-primary-button:hover {
+  background-color: #333;
+}
+
+.community-primary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.community-secondary-button {
+  border: 1px solid #ccc;
+
+  background-color: white;
+  color: #333;
+}
+
+.community-secondary-button:hover {
+  background-color: #eee;
+}
+
+.community-danger-button {
+  border: 1px solid #d0d0d0;
+
+  background-color: white;
+  color: #c62828;
+}
+
+.community-danger-button:hover {
+  background-color: #fff0f0;
+}
+
+.community-danger-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.community-count {
+  margin-bottom: 18px;
+  color: #666;
+}
+
+.community-empty {
+  padding: 40px;
+
+  background-color: white;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  text-align: center;
+  color: #666;
+}
+
+.post-list {
+  overflow: hidden;
+
+  background-color: white;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.post-list-item {
+  padding: 20px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  border-bottom: 1px solid #eee;
+}
+
+.post-list-item:last-child {
+  border-bottom: none;
+}
+
+.post-list-item:hover {
+  background-color: #f7f7f7;
+}
+
+.post-list-main h2 {
+  margin: 0 0 10px;
+
+  font-size: 18px;
+}
+
+.post-list-meta {
+  display: flex;
+  gap: 14px;
+
+  color: #888;
+  font-size: 13px;
+}
+
+.post-view-count {
+  flex-shrink: 0;
+
+  color: #888;
+  font-size: 13px;
+}
+
+.post-form-page {
+  max-width: 900px;
+}
+
+.post-form {
+  padding: 28px;
+
+  background-color: white;
+
+  border: 1px solid #ddd;
+  border-radius: 12px;
+}
+
+.post-form-error {
+  margin-bottom: 20px;
+}
+
+.post-form-field {
+  margin-bottom: 24px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.post-form-field label {
+  font-weight: bold;
+}
+
+.post-form-field input,
+.post-form-field textarea {
+  width: 100%;
+
+  padding: 14px;
+
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
+  font: inherit;
+}
+
+.post-form-field textarea {
+  min-height: 350px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.post-form-field input:focus,
+.post-form-field textarea:focus {
+  outline: none;
+  border-color: #555;
+}
+
+.post-form-count {
+  align-self: flex-end;
+
+  color: #999;
+  font-size: 12px;
+}
+
+.post-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.post-detail {
+  overflow: hidden;
+
+  background-color: white;
+
+  border: 1px solid #ddd;
+  border-radius: 12px;
+}
+
+.post-detail-header {
+  padding: 28px;
+
+  border-bottom: 1px solid #eee;
+}
+
+.post-detail-header h1 {
+  margin: 0 0 14px;
+
+  font-size: 30px;
+}
+
+.post-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  color: #888;
+  font-size: 13px;
+}
+
+.post-detail-error {
+  margin: 20px 28px 0;
+}
+
+.post-detail-content {
+  min-height: 300px;
+
+  padding: 32px 28px;
+
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.post-detail-actions {
+  padding: 20px 28px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  border-top: 1px solid #eee;
+}
+
+.post-owner-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.comment-placeholder {
+  margin-top: 40px;
+
+  padding-top: 30px;
+
+  border-top: 1px solid #ddd;
+}
+
+.comment-placeholder h2 {
+  margin-top: 0;
+}
+
+@media (max-width: 768px) {
+  .community-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .community-primary-button {
+    text-align: center;
+  }
+
+  .post-list-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .post-detail-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .post-owner-actions {
+    width: 100%;
+  }
+
+  .post-owner-actions a,
+  .post-owner-actions button {
+    flex: 1;
+    text-align: center;
+  }
+
+  .post-form {
+    padding: 20px;
+  }
+}

@@ -34,6 +34,10 @@ function Header() {
             영화
           </Link>
 
+          <Link to="/posts">
+            커뮤니티
+          </Link>
+
           {!authLoading && (
             <>
               {isLoggedIn ? (

@@ -7,6 +7,11 @@ import MovieDetailPage from './pages/MovieDetailPage'
 import SchedulePage from './pages/SchedulePage'
 import SeatPage from './pages/SeatPage'
 import MyReservationPage from './pages/MyReservationPage'
+import PostListPage from './pages/PostListPage'
+import PostDetailPage from './pages/PostDetailPage'
+import PostWritePage from './pages/PostWritePage'
+import PostEditPage from './pages/PostEditPage'
+import './community.css'
 
 function App() {
   return (
@@ -38,6 +43,26 @@ function App() {
           <Route
             path="/my/reservations"
             element={<MyReservationPage />}
+          />
+
+          <Route
+            path="/posts"
+            element={<PostListPage />}
+          />
+
+          <Route
+            path="/posts/new"
+            element={<PostWritePage />}
+          />
+
+          <Route
+            path="/posts/:postId"
+            element={<PostDetailPage />}
+          />
+
+          <Route
+            path="/posts/:postId/edit"
+            element={<PostEditPage />}
           />
 
           <Route
