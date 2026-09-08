@@ -51,7 +51,7 @@ input {
 }
 
 .page-header {
-  margin-bottom: 30px;
+  margin-bottom: 24px;
 }
 
 .page-header h1 {
@@ -62,6 +62,62 @@ input {
 
 .page-header p {
   margin: 0;
+  color: #666;
+}
+
+.movie-search-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.movie-search-input {
+  width: 100%;
+  max-width: 500px;
+
+  padding: 12px 14px;
+
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
+  background-color: white;
+}
+
+.movie-search-input:focus {
+  outline: none;
+  border-color: #555;
+}
+
+.movie-search-button,
+.movie-reset-button {
+  padding: 12px 18px;
+
+  border: none;
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+.movie-search-button {
+  background-color: #111;
+  color: white;
+}
+
+.movie-search-button:hover {
+  background-color: #333;
+}
+
+.movie-reset-button {
+  background-color: #ddd;
+  color: #222;
+}
+
+.movie-reset-button:hover {
+  background-color: #ccc;
+}
+
+.movie-count {
+  margin-bottom: 24px;
   color: #666;
 }
 
@@ -80,9 +136,11 @@ input {
 
 .movie-card {
   overflow: hidden;
+
   background-color: white;
-  border-radius: 10px;
+
   border: 1px solid #ddd;
+  border-radius: 10px;
 
   transition:
     transform 0.2s ease,
@@ -91,20 +149,25 @@ input {
 
 .movie-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px
-    rgba(0, 0, 0, 0.12);
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 .movie-poster-wrapper {
   width: 100%;
+
   aspect-ratio: 2 / 3;
+
   background-color: #ddd;
 }
 
 .movie-poster {
   width: 100%;
   height: 100%;
+
   display: block;
+
   object-fit: cover;
 }
 
@@ -125,11 +188,13 @@ input {
 
 .movie-title {
   margin: 0 0 10px;
+
   font-size: 18px;
 }
 
 .movie-genre {
   margin: 0 0 12px;
+
   color: #666;
   font-size: 14px;
 }
@@ -147,18 +212,23 @@ input {
   display: grid;
   grid-template-columns: 320px 1fr;
   gap: 48px;
+
   align-items: start;
 }
 
 .movie-detail-poster {
   width: 100%;
+
   overflow: hidden;
+
   border-radius: 12px;
+
   background-color: #ddd;
 }
 
 .movie-detail-poster img {
   width: 100%;
+
   display: block;
 }
 
@@ -210,6 +280,7 @@ input {
 
 .movie-description p {
   line-height: 1.7;
+
   color: #555;
 }
 
@@ -248,12 +319,14 @@ input {
 
 .form-group input {
   padding: 12px;
+
   border: 1px solid #ccc;
   border-radius: 6px;
 }
 
 .form button {
   padding: 12px;
+
   border: none;
   border-radius: 6px;
 
@@ -264,6 +337,14 @@ input {
 }
 
 @media (max-width: 768px) {
+  .movie-search-form {
+    flex-wrap: wrap;
+  }
+
+  .movie-search-input {
+    max-width: none;
+  }
+
   .movie-detail {
     grid-template-columns: 1fr;
   }
