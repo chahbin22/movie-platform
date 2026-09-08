@@ -15,7 +15,8 @@ a {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -339,6 +340,90 @@ input {
   font-size: 14px;
 }
 
+.schedule-search-form {
+  padding: 24px;
+  margin-bottom: 24px;
+
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.schedule-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.schedule-field label {
+  font-weight: bold;
+}
+
+.schedule-field select,
+.schedule-field input {
+  min-width: 220px;
+  padding: 12px;
+
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
+  background-color: white;
+}
+
+.schedule-search-button {
+  padding: 12px 20px;
+
+  border: none;
+  border-radius: 8px;
+
+  background-color: #111;
+  color: white;
+
+  cursor: pointer;
+}
+
+.schedule-search-button:hover {
+  background-color: #333;
+}
+
+.schedule-search-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.schedule-result {
+  margin-top: 32px;
+}
+
+.schedule-json {
+  overflow-x: auto;
+
+  padding: 20px;
+
+  background-color: #222;
+  color: #f5f5f5;
+
+  border-radius: 10px;
+
+  line-height: 1.5;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 32px;
+
+  color: #555;
+}
+
+.back-link:hover {
+  color: #111;
+}
+
 @media (max-width: 768px) {
   .movie-search-form {
     flex-wrap: wrap;
@@ -354,5 +439,18 @@ input {
 
   .movie-detail-poster {
     max-width: 320px;
+  }
+
+  .schedule-search-form {
+    align-items: stretch;
+  }
+
+  .schedule-field {
+    width: 100%;
+  }
+
+  .schedule-field select,
+  .schedule-field input {
+    width: 100%;
   }
 }
