@@ -8,7 +8,15 @@ import java.util.List;
 public interface SeatRepository
         extends JpaRepository<Seat, Long> {
 
-    List<Seat> findByScreen_ScreenIdOrderBySeatRowAscSeatNumberAsc(
+    List<Seat>
+    findByScreen_ScreenIdOrderBySeatRowAscSeatNumberAsc(
             Long screenId
+    );
+
+    boolean
+    existsByScreen_ScreenIdAndSeatRowAndSeatNumber(
+            Long screenId,
+            String seatRow,
+            Integer seatNumber
     );
 }
