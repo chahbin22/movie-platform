@@ -1,12 +1,12 @@
 package com.movieplatform.backend.client;
 
+import com.movieplatform.backend.dto.tmdb.TmdbMovieDetailDto;
 import com.movieplatform.backend.dto.tmdb.TmdbMovieResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-import com.movieplatform.backend.dto.tmdb.TmdbMovieDetailDto;
 
 @Component
 public class TmdbClient {
@@ -30,23 +30,45 @@ public class TmdbClient {
     }
 
     public TmdbMovieResponse getPopularMovies() {
+        return getPopularMovies(1);
+    }
+
+    public TmdbMovieResponse getPopularMovies(int page) {
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/popular")
                         .queryParam("language", "ko-KR")
-                        .queryParam("page", 1)
+                        .queryParam("region", "KR")
+                        .queryParam("page", page)
                         .build())
                 .retrieve()
                 .body(TmdbMovieResponse.class);
     }
 
-    public TmdbMovieDetailDto getMovieDetail(Long movieId) {
-    return restClient.get()
-            .uri(uriBuilder -> uriBuilder
-                    .path("/movie/{movieId}")
-                    .queryParam("language", "ko-KR")
-                    .build(movieId))
-            .retrieve()
-            .body(TmdbMovieDetailDto.class);
-}
+    public TmdbMovieResponse getNowPlayingMovies(int page) {
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/now_playing")
+                        .queryParam("language", "ko-KR")
+                        .queryParam("region", "KR")
+                        .queryParam("page", page)
+                        .build())
+                .retrieve()
+                .body(TmdbMovieResponse.class);
+    }
+
+    public TmdbMovieDetailDto getMovieDetail(
+            Long movieId
+    ) {
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/{movieId}")
+                        .queryParam(
+                                "language",
+                                "ko-KR"
+                        )
+                        .build(movieId))
+                .retrieve()
+                .body(TmdbMovieDetailDto.class);
+    }
 }

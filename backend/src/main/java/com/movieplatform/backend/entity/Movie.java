@@ -19,7 +19,11 @@ public class Movie {
     @Column(name = "movie_id")
     private Long movieId;
 
-    @Column(name = "tmdb_movie_id", nullable = false, unique = true)
+    @Column(
+            name = "tmdb_movie_id",
+            nullable = false,
+            unique = true
+    )
     private Long tmdbMovieId;
 
     @Column(nullable = false, length = 200)
@@ -34,34 +38,49 @@ public class Movie {
     @Column(length = 100)
     private String genre;
 
-    @Column(name = "running_time", nullable = false)
+    @Column(
+            name = "running_time",
+            nullable = false
+    )
     private Integer runningTime;
 
     @Column(name = "release_date")
     private LocalDate releaseDate;
 
-    @Column(name = "poster_url", length = 500)
+    @Column(
+            name = "poster_url",
+            length = 500
+    )
     private String posterUrl;
 
-    @Column(name = "age_rating", length = 20)
+    @Column(
+            name = "age_rating",
+            length = 20
+    )
     private String ageRating;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(
+            name = "created_at",
+            nullable = false
+    )
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(
+            name = "updated_at",
+            nullable = false
+    )
     private LocalDateTime updatedAt;
 
     public Movie(
-        Long tmdbMovieId,
-        String title,
-        String description,
-        String director,
-        String genre,
-        Integer runningTime,
-        LocalDate releaseDate,
-        String posterUrl,
-        String ageRating
+            Long tmdbMovieId,
+            String title,
+            String description,
+            String director,
+            String genre,
+            Integer runningTime,
+            LocalDate releaseDate,
+            String posterUrl,
+            String ageRating
     ) {
         this.tmdbMovieId = tmdbMovieId;
         this.title = title;
@@ -73,16 +92,35 @@ public class Movie {
         this.posterUrl = posterUrl;
         this.ageRating = ageRating;
     }
-    
+
+    public void updateFromTmdb(
+            String title,
+            String description,
+            String genre,
+            Integer runningTime,
+            LocalDate releaseDate,
+            String posterUrl
+    ) {
+        this.title = title;
+        this.description = description;
+        this.genre = genre;
+        this.runningTime = runningTime;
+        this.releaseDate = releaseDate;
+        this.posterUrl = posterUrl;
+    }
+
     @PrePersist
     protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now =
+                LocalDateTime.now();
+
         this.createdAt = now;
         this.updatedAt = now;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt =
+                LocalDateTime.now();
     }
 }
