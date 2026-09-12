@@ -79,7 +79,9 @@ TMDB API를 활용해 영화 정보를 제공하며, Spring Boot 기반 REST API
 
 ### 커뮤니티
 
-![커뮤니티](screenshots/community.png)
+![커뮤니티 목록](screenshots/community-1.png)
+
+![커뮤니티 상세](screenshots/community-2.png)
 
 ---
 
